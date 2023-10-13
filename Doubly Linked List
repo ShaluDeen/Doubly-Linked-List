@@ -1,0 +1,203 @@
+#include <stdio.h>
+#include <stdlib.h>
+void appendList(int indata);
+void insrt(int size);
+void del(int sizel);
+int searchList(int searc);
+int printList();
+struct node{
+struct node* prev;
+int data;
+struct node* next;
+}*head;
+int main() {
+int sizel;
+int ch, n, lim = 0;
+while (lim == 0) {
+printf("1. Add element \n2. Enough. \nEnter your
+choice : ");
+scanf("%d", &ch);
+switch(ch) {
+case 1 :
+printf("enter element : ");
+scanf("%d", &n);
+appendList(n);
+break;
+case 2 :
+lim = 1;
+break;
+default :
+printf("Invalid option.");
+}
+}
+appendList(1);
+appendList(2);
+appendList(3);
+appendList(4);
+appendList(5);
+sizel = printList();
+int ch2, searc;
+printf("\n1. Insert \n2. Delete \n3. Search \n4. Display
+\nEnter your choice : ");
+scanf("%d", &ch2);
+switch (ch2) {
+case 1 :
+insrt(sizel);
+break;
+case 2 :
+del(sizel);
+break;
+case 3 :
+printf("Enter element that has to be searched : ");
+scanf("%d", &searc);
+searchList(searc);
+break;
+case 4 :
+printList();
+default :
+printf("Invalid choice..");
+}
+return 0;
+}
+struct node* createNode() {
+struct node* n;
+n = (struct node*) malloc (sizeof(struct node));
+return n;
+}
+void appendList(int indata) {
+struct node* temp = head;
+struct node* newNode = createNode();
+newNode -> data = indata;
+newNode -> next = NULL;
+newNode -> prev = NULL;
+if (head == NULL) {
+head = newNode;
+return;
+}
+while (temp -> next != NULL) {
+temp = temp -> next;
+}
+temp -> next = newNode;
+newNode -> prev = temp;
+}
+void insrt (int size) {
+int choice, indata, pos;
+struct node* temp = head;
+struct node* newNode = createNode();
+printf("\n1.Insert in the beginning. \n2.Insert in the
+end. \n3.Insert in a specific \nEnter choice : ");
+scanf("%d", &pos);
+printf("Enter element : ");
+scanf("%d", &indata);
+newNode -> data = indata;
+newNode -> next = NULL;
+newNode -> prev = NULL;
+if (head == NULL) {
+head = newNode;
+return;
+}
+switch (pos) {
+case 1:
+newNode -> next = head;
+head -> prev = newNode;
+head = newNode;
+break;
+case 2:
+appendList(indata);
+break;
+case 3:
+printf("Enter position : ");
+scanf("%d", &pos);
+if (pos <= 1 || pos > size) {
+printf("Invalid position.");
+return;
+}
+for (int i = 1; i < pos-1; i++) {
+temp = temp -> next;
+}
+newNode -> next = temp -> next;
+temp -> next -> prev = newNode;
+newNode -> prev = temp;
+temp -> next = newNode;
+break;
+default :
+printf("Invalid Input.");
+}
+printList();
+}
+void del(int sizel) {
+int ch3, del = 0, indi;
+struct node* temp = head;
+struct node* ptr;
+printf("\n1. Delete by position. \n2. Delete by value.
+\nEnter your choice : ");
+scanf("%d", &ch3);
+switch (ch3) {
+case 1 :
+printf("Enter position : ");
+scanf("%d", &del);
+if (del > sizel || del <= 0) {
+printf("Invalid Position.\n");
+return;
+}
+break;
+case 2 :
+printf("Enter value : ");
+scanf("%d", &del);
+del = searchList(del);
+break;
+default :
+printf("Invalid choice..");
+return;
+}
+if (del == 0)
+return;
+if (del == 1) {
+head = temp -> next;
+head -> prev = NULL;
+free(temp);
+printList();
+return;
+}
+for (int i = 1; i < del-1 ; i++) {
+temp = temp -> next;
+}
+ptr = temp -> next;
+if (del == sizel) {
+temp -> next = NULL;
+free(ptr);
+printList();
+return;
+}
+ptr -> next -> prev = temp;
+temp -> next = ptr -> next;
+free(ptr);
+printList();
+}
+int printList() {
+struct node* temp = head;
+int count = 0;
+while (temp != NULL) {
+printf("%d ", temp -> data);
+temp = temp -> next;
+count++;
+}
+printf("\n");
+return count;
+}
+int searchList(int searc) {
+struct node* temp = head;
+int indi = 0;
+for (int i = 1; temp != NULL; i++) {
+if (temp -> data == searc) {
+printf("\nElement '%d' found! \nPosition :
+%d\n", searc, i);
+return i;
+}
+else
+temp = temp -> next;
+}
+if (indi == 0)
+printf("\nElement '%d' not found!\n", searc);
+return 0;
+}
